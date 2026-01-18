@@ -8,7 +8,7 @@ function App() { // императивный подход, мы создаем �
   const currentDate = new Date() // декларативный 
   const year = currentDate.getFullYear()
 
-  return ( // императивный 
+  return ( // декларативный 
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
