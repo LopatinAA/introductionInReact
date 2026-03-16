@@ -1,0 +1,56 @@
+.container {
+    display: grid;
+    place-items: center;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+    gap: 2px;
+}
+
+.input {
+    width: -webkit-fill-available;
+    border-radius: 8px;
+    text-align: end;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    color: #fff;
+    cursor: text;
+    transition: border-color 0.25s;
+}
+
+.buttons {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    grid-template-columns: auto auto;
+    gap: 2px;
+}
+
+.numsButton {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, auto);
+    gap: 2px;
+}
+
+.numsButton > :nth-child(10) {
+    grid-column: 1 / -1;
+}
+
+.functionButton {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 2px;
+}
+
+.functionButton button {
+    background-color: #FF9200;
+}
+
+.result {
+    color: green
+}
+
