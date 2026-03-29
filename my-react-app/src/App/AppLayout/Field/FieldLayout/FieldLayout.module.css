@@ -1,8 +1,0 @@
-.fieldlayout {
-    display: grid;
-    grid-template-columns: repeat(3, 60px);
-    grid-template-rows: repeat(3, 60px);
-    gap: 2px;
-    
-}
-
