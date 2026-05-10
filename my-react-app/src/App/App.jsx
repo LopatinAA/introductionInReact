@@ -1,7 +1,9 @@
+import RegistrationForm from "./registrationForm/RegistrationForm"
+
 const App = () => {
   return (
     <>
-    123
+    <RegistrationForm/>
     </>
   )
 }
