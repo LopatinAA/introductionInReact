@@ -1,115 +1,46 @@
-import { useState, useRef, useEffect } from "react"
-import style from './RegistrationForm.module.css'
-
-const sendFormData = (formData) => {
-  console.log({ email: formData.email, password: formData.password })
-}
-
-const defaultState = {
-  email: '',
-  password: '',
-  confirmPassword: '',
-}
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import {validationSchema} from './validationSchema'
+import { useEffect, useRef } from "react"
 
 const RegistrationForm = () => {
-  const [registrationForm, setRegistrationForm] = useState(defaultState)
-  const [inputError, setInputError] = useState('')
-
-  const submitButtonRef = useRef()
-
-  const onSubmit = (event) => {
-    event.preventDefault()
-    sendFormData({ registrationForm: email, })
-    setRegistrationForm(defaultState)
-  }
-
-  const { email, password, confirmPassword } = registrationForm
-
-  // const onInputChange = ({ target }) => {
-  //   setRegistrationForm({ ...registrationForm, [target.name]: target.value })
-
-  //   let newError = null
-  //   if (!/^[\w_]*$/.test(target.value)) {
-  //     newError = 'Допустимые символы: буквы, цифры и нижнее подчёркивание'
-  //   }
-
-  //   setInputError(newError)
-  // }
-
-  const onEmailChange = ({ target }) => {
-    setRegistrationForm({ ...registrationForm, [target.name]: target.value })
-
-    let newError = null
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(target.value)) {
-      newError = 'Недопустимый email'
-    }
-
-    setInputError(newError)
-  }
-
-  const onPasswordChange = ({ target }) => {
-    setRegistrationForm({ ...registrationForm, [target.name]: target.value })
-  }
-
-  const checkValidatePassword = ({ target }) => {
-    let newError = null
-    if (!/^[a-z0-9]{4,8}$/.test(target.value)) newError = 'Недопустимый пароль'
-    setInputError(newError)
-  }
-
-  const checkConfirmPassword = ({ target }) => {
-    let newError = null
-    if (target.value != password) newError = 'Пароли не совпадают'
-    setInputError(newError)
-  }
-
-  useEffect(() => {
-    if (inputError && confirmPassword) submitButtonRef.current.focus()
+  const { register, handleSubmit, formState: {errors, isValid}} = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    }, 
+    mode: 'onTouched'
   })
 
+  const onSubmit = ({email, password}) => {
+    console.log({email, password})
+  }
+  const submitButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (isValid) submitButtonRef.current.focus()
+  }, [isValid])
+
   return (
-    <div className={style.container}>
-      {inputError && <div className={style.errorMassage}>{inputError}</div>}
-      <form onSubmit={onSubmit} className={style.form}>
-        <input
-          className={style.inputForm}
-          key='1'
-          name='email'
-          type='email'
-          placeholder='Почта'
-          value={email}
-          // onChange={({target}) => setRegistrationForm({...registrationForm, email: target.value})}
-          onChange={onEmailChange}
-        />
-        <input
-          className={style.inputForm}
-          key='2'
-          name='password'
-          type='password'
-          placeholder='Пароль'
-          value={password}
-          onChange={onPasswordChange}
-          onBlur={(target) => checkValidatePassword(target)}
-        />
-        <input
-          className={style.inputForm}
-          key='3'
-          name='confirmPassword'
-          type='password'
-          placeholder='Повторить пароль'
-          value={confirmPassword}
-          onChange={onPasswordChange}
-          onBlur={(target) => checkConfirmPassword(target)}
-        />
-        <button
-          type='submit'
-          disabled={!!inputError}
-          ref={submitButtonRef}
-        >
-          Зарегистрироваться
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <input {...register('email')} placeholder="email" type="email"/>
+        {errors?.email && <p style={{color: 'red'}}>{errors?.email.message}</p>}
+      </div>
+      <div>
+        <input {...register('password')} placeholder="password" type="password"/>
+        {errors?.password && <p style={{color: 'red'}}>{errors?.password.message}</p>}
+      </div>
+      <div>
+        <input {...register('confirmPassword')} placeholder="password" type="password"/>
+        {errors?.confirmPassword && <p style={{color: 'red'}}>{errors?.confirmPassword.message}</p>}
+      </div>
+      <button type="submit" disabled={!isValid} ref={submitButtonRef}>
+        Зарегистрироваться
+      </button>
+    </form>
   )
 }
 
