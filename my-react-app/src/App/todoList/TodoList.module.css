@@ -1,0 +1,18 @@
+.todoListContainer{
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 10px;
+    display: grid;
+
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+
+.todo {
+    padding: 4px;
+    padding-bottom: 0px;
+    border-bottom: 1px solid grey;
+}

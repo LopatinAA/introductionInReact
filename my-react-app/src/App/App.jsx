@@ -1,8 +1,8 @@
+import { TodoList } from "./todoList/TodoList"
+
 const App = () => {
   return (
-    <>
-    123
-    </>
+    <TodoList></TodoList>
   )
 }
 
