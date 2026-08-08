@@ -1,0 +1,14 @@
+.panel{
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 5px;
+}
+
+.inputPanel{
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+
+.inputPanel:hover{
+    border-color: #646cff
+}
