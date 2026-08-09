@@ -1,42 +1,59 @@
-const BASE_URL = 'http://localhost:3003/todos';
+// api/todosApi.js
+import { 
+  ref, 
+  set, 
+  push, 
+  get, 
+  remove, 
+  update,
+  child,
+  onValue,
+  off
+} from "firebase/database";
+import { db, getTodosRef, getTodoRef } from '../../../firebase';
 
-export const getTodos = () => {
-    return fetch(BASE_URL)
-        .then(res => {
-            if (!res.ok) throw new Error('Ошибка загрузки задач')
-            return res.json()
-        })
-}
+// 🟢 GET - получить все задачи
+export const getTodos = async () => {
+  const todosRef = getTodosRef();
+  const snapshot = await get(todosRef);
+  
+  if (snapshot.exists()) {
+    const data = snapshot.val();
+    // Firebase возвращает объект с ключами, преобразуем в массив
+    return Object.keys(data).map(key => ({
+      id: key,
+      ...data[key]
+    }));
+  } else {
+    return []; // если данных нет
+  }
+};
 
-export const addTodo = (todo) => {
-    return fetch(BASE_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(todo)
-    })
-        .then(res => {
-            if (!res.ok) throw new Error('Ошибка создания задачи');
-            //return res.json() нет пока небходимости возращать тело потому что обновлять задачи буду все равно с помощью get
-        })
-}
+// 🟢 POST - создать новую задачу
+export const addTodo = async (todo) => {
+  const todosRef = getTodosRef();
+  const newTodoRef = push(todosRef); // генерирует уникальный ключ
+  await set(newTodoRef, {
+    title: todo.title,
+    completed: todo.completed || false,
+    createdAt: Date.now() // добавим временную метку
+  });
+  return { id: newTodoRef.key, ...todo };
+};
 
-export const updateTodo = (id, todo) => {
-    return fetch(`${BASE_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(todo)
-    })
-        .then(res => {
-            if (!res.ok) throw new Error('Ошибка обновления задачи');
-            //return res.json() 
-        })
-}
+// 🟢 PUT - полностью обновить задачу
+export const updateTodo = async (id, todo) => {
+  const todoRef = getTodoRef(id);
+  await update(todoRef, {
+    title: todo.title,
+    completed: todo.completed
+  });
+  return { id, ...todo };
+};
 
-export const deletTodo = (id) => {
-    return fetch(`${BASE_URL}/${id}`, {
-        method: 'DELETE'
-    })
-        .then(res => {
-            if (!res.ok) throw new Error('Ошибка удаления задачи')
-        })
-}
+// 🟢 DELETE - удалить задачу
+export const deleteTodo = async (id) => {
+  const todoRef = getTodoRef(id);
+  await remove(todoRef);
+  return { id };
+};
